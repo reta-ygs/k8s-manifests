@@ -1,0 +1,19 @@
+apiVersion: secrets.doppler.com/v1alpha1
+kind: DopplerSecret
+metadata:
+  name: tailscale-secret
+  namespace: doppler-operator-system
+spec:
+  tokenSecret:
+    name: doppler-default-token-secret
+  secrets:
+    - TAILSCALE_CLIENT_ID
+    - TAILSCALE_CLIENT_SECRET
+  managedSecret:
+    name: operator-oauth
+    namespace: tailscale
+  processors:
+    TAILSCALE_CLIENT_ID:
+      asName: client_id
+    TAILSCALE_CLIENT_SECRET:
+      asName: client_secret
