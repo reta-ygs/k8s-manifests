@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fresh-rss
+  labels:
+    app: fresh-rss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fresh-rss
+  template:
+    metadata:
+      name: fresh-rss
+      labels:
+        app: fresh-rss
+    spec:
+      containers:
+        - name: fresh-rss
+          image: freshrss/freshrss
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /var/www/FreshRSS/data
+              name: freshrss-data
+            - mountPath: /var/www/FreshRSS/extensions
+              name: freshrss-extensions
+          env:
+            - name: TZ
+              value: Asia/Tokyo
+            - name: CRON_MIN
+              value: '1,31'
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+      volumes:
+        - name: freshrss-data
+          persistentVolumeClaim:
+            claimName: freshrss-data-pvc
+        - name: freshrss-extensions
+          persistentVolumeClaim:
+            claimName: freshrss-extensions-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: freshrss-data-pvc
+spec:
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: freshrss-extensions-pvc
+spec:
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 2Gi
+  accessModes:
+    - ReadWriteOnce

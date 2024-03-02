@@ -3,3 +3,12 @@ kind: Kustomization
 resources:
   - https://raw.githubusercontent.com/tailscale/tailscale/main/cmd/k8s-operator/deploy/manifests/operator.yaml
   - doppler.yaml
+patches:
+  - patch: |
+      $patch: delete
+      kind: Secret
+      metadata:
+        name: operator-oauth
+    target:
+      kind: Secret
+      name: operator-oauth

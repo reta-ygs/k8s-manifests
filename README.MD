@@ -14,5 +14,5 @@ kubectl create secret generic doppler-token-secret \
 
 ## Kustomize
 ```shell
-kubectl apply -k base
+kubectl apply -k .
 ```
